@@ -27,7 +27,7 @@ def main():
 
     # Read the file
     with open(inFile, "rt") as f:
-        lines = f.readlines()
+        lines = f.readlines()[:18]
 
     for line in lines:
         # Do not process comments or blank lines
@@ -36,12 +36,15 @@ def main():
 
             # Extract only the file path to the model, removing unneeded path
             line = line[:line.find("MD2") + 3].split("\\")[3:]
+            print(line)
 
             # Construct the path to the 3D model
-            modelPath = os.path.join(os.getcwd(), os.path.sep.join(line)).upper()
+            modelPath = os.path.join(os.path.dirname(inFile), os.path.sep.join(line)).upper()
+            print(modelPath)
 
             # The 3D model does exist, move along
-            if os.path.exists(modelPath):
+            print("\nDoes model exist? {0}\n".format(os.path.isfile(modelPath)))
+            if os.path.isfile(modelPath):
                 continue
 
             # Nope, it does not exist
@@ -55,15 +58,16 @@ def main():
     # Some 3D models do not exist, report them
     if len(doNotExist) > 0:
         print("""Of the bricks listed, {0} do not exist.
-A list has been saved to \n{1}"""
+A list has been saved to \n{1}\n"""
               .format(len(doNotExist), outFile))
 
-        with open(outFile, "at") as o:
-            o.write("\n##########\n# {0}\n##########\n\n".format(inFile))
-
-            # List all the parts
-            for part in doNotExist:
-                o.write("* {0}\n".format(part))
+#        with open(outFile, "at") as o:
+#            o.write("\n##########\n# {0}\n##########\n\n".format(inFile))
+#
+#            # List all the parts
+        for part in doNotExist:
+#                o.write("* {0}\n".format(part))
+            print("* {0}".format(part))
 
     # All models exist
     else:
