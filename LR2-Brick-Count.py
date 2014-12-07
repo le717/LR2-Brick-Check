@@ -14,9 +14,9 @@ def main():
               os.path.basename(sys.argv[0])))
         raise SystemExit(1)
 
-    # Setup required items
+    # Set up required items
     inFile = os.path.abspath(sys.argv[1])
-    outFile = os.path.join(os.path.expanduser("~"), "LR2-Brick-Report.log")
+    outFile = os.path.join(os.path.expanduser("~"), "My Documents", "LR2-Brick-Report.log")
     brickCount = 0
     doNotExist = []
 
@@ -38,10 +38,10 @@ def main():
             line = line[:line.find("MD2") + 3].split("\\")[3:]
 
             # Construct the path to the 3D model
-            modelPath = os.path.join(os.getcwd(), os.path.sep.join(line))
+            modelPath = os.path.join(os.getcwd(), os.path.sep.join(line)).upper()
 
             # The 3D model does exist, move along
-            if os.path.isfile(modelPath):
+            if os.path.exists(modelPath):
                 continue
 
             # Nope, it does not exist
