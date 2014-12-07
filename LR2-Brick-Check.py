@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""LR2 Brick Count - Keeping your LR2 brick mods valid.
+"""LR2 Brick Check - Keeping your LR2 brick mods valid.
 
 Created 2014 Triangle717
 <http://le717.github.io/>
@@ -28,7 +28,7 @@ def main():
     # Set up required items
     inFile = os.path.abspath(sys.argv[1]).upper()
     outFile = os.path.join(os.path.expanduser("~"), "My Documents",
-                           "LR2-Brick-Report-{0}.log".format(
+                           "LR2-Brick-Check-{0}.log".format(
                            os.path.basename(inFile).rstrip(".TXT")))
     brickCount = 0
     doNotExist = []
