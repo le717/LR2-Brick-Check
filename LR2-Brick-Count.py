@@ -1,9 +1,20 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""LR2 Brick Count - Keeping your LR2 brick mods valid.
+
+Created 2014 Triangle717
+<http://le717.github.io/>
+
+Licensed under The MIT License
+<http://opensource.org/licenses/MIT/>
+
+"""
 
 from __future__ import print_function
 import os
 import sys
+
+__all__ = ("main")
 
 
 def main():
@@ -15,8 +26,10 @@ def main():
         raise SystemExit(1)
 
     # Set up required items
-    inFile = os.path.abspath(sys.argv[1])
-    outFile = os.path.join(os.path.expanduser("~"), "My Documents", "LR2-Brick-Report.log")
+    inFile = os.path.abspath(sys.argv[1]).upper()
+    outFile = os.path.join(os.path.expanduser("~"), "My Documents",
+                           "LR2-Brick-Report-{0}.log".format(
+                           os.path.basename(inFile).rstrip(".TXT")))
     brickCount = 0
     doNotExist = []
 
@@ -27,7 +40,7 @@ def main():
 
     # Read the file
     with open(inFile, "rt") as f:
-        lines = f.readlines()[:18]
+        lines = f.readlines()
 
     for line in lines:
         # Do not process comments or blank lines
@@ -36,14 +49,12 @@ def main():
 
             # Extract only the file path to the model, removing unneeded path
             line = line[:line.find("MD2") + 3].split("\\")[3:]
-            print(line)
 
             # Construct the path to the 3D model
-            modelPath = os.path.join(os.path.dirname(inFile), os.path.sep.join(line)).upper()
-            print(modelPath)
+            modelPath = os.path.join(os.path.dirname(inFile),
+                                     os.path.sep.join(line))
 
             # The 3D model does exist, move along
-            print("\nDoes model exist? {0}\n".format(os.path.isfile(modelPath)))
             if os.path.isfile(modelPath):
                 continue
 
@@ -55,19 +66,24 @@ def main():
     print("There are {0} bricks listed in {1}.\n".format(brickCount,
           os.path.basename(inFile)))
 
+    # There is a hard limit of 512 bricks per file
+    if brickCount > 512:
+        print("""You have too many bricks!
+The game will crash if you have more than 512 bricks!
+""")
+
     # Some 3D models do not exist, report them
     if len(doNotExist) > 0:
         print("""Of the bricks listed, {0} do not exist.
 A list has been saved to \n{1}\n"""
               .format(len(doNotExist), outFile))
 
-#        with open(outFile, "at") as o:
-#            o.write("\n##########\n# {0}\n##########\n\n".format(inFile))
-#
-#            # List all the parts
-        for part in doNotExist:
-#                o.write("* {0}\n".format(part))
-            print("* {0}".format(part))
+        with open(outFile, "wt") as o:
+            o.write("##########\n# {0}\n##########\n\n".format(inFile))
+
+            # List all the parts
+            for part in doNotExist:
+                o.write("* {0}\n".format(part))
 
     # All models exist
     else:
