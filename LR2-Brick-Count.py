@@ -10,18 +10,19 @@ def main():
     """The entire application."""
     # We were not given enough arguments
     if len(sys.argv) != 2:
-        print("Usage: {0} [Input file]".format(
+        print("\nUsage: {0} [Input file]".format(
               os.path.basename(sys.argv[0])))
         raise SystemExit(1)
 
     # Setup required items
     inFile = os.path.abspath(sys.argv[1])
+    outFile = os.path.join(os.path.expanduser("~"), "LR2-Brick-Report.log")
     brickCount = 0
     doNotExist = []
 
     # The input file does not exist
     if not os.path.exists(inFile):
-        print("{0} does not exist!".format(inFile))
+        print("\n{0} does not exist!".format(inFile))
         raise SystemExit(1)
 
     # Read the file
@@ -53,11 +54,16 @@ def main():
 
     # Some 3D models do not exist, report them
     if len(doNotExist) > 0:
-        print("Of the bricks listed, {0} do not exist. They are as follows:\n"
-              .format(len(doNotExist)))
+        print("""Of the bricks listed, {0} do not exist.
+A list has been saved to \n{1}"""
+              .format(len(doNotExist), outFile))
 
-        for part in doNotExist:
-            print("* {0}".format(part))
+        with open(outFile, "at") as o:
+            o.write("\n##########\n# {0}\n##########\n\n".format(inFile))
+
+            # List all the parts
+            for part in doNotExist:
+                o.write("* {0}\n".format(part))
 
     # All models exist
     else:
